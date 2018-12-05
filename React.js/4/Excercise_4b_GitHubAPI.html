@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>React getting started</title>
+  </head>
+  <body>
+    <!-- Root container for react components -->
+    <div id='root'></div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.1/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.1/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+    
+    <script type="text/babel">
+      class ApiList extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {listItems: []};
+        }
+   
+        componentDidMount() {
+          fetch('https://api.github.com/search/repositories?q=react')
+          .then((response) => response.json()) 
+          .then((responseData) => { 
+            console.log(responseData)
+            this.setState({ 
+              listItems: responseData.items,
+            }); 
+          })        
+        }
+          
+        buttonPressed() {
+
+        }
+        render() {
+          const itemRows = this.state.listItems.map((repo) => 
+              <tr key={repo.name}>
+                <td>{repo.full_name}</td>
+                <td>{repo.owner.url}</td>
+              </tr>
+            )
+           
+          return (
+            <div>
+              <h2>Repositories</h2>
+              <input type="text" id="search" value={this.state.search}></input>
+              <button id="bSearch" onClick={this.buttonPressed}>Search</button>
+              <table>
+                <tbody>
+                  <tr><th>Name</th><th>URL</th></tr>
+                  {itemRows}
+                </tbody>
+              </table>
+            </div>
+          );
+        }
+      }
+      ReactDOM.render(<ApiList />, document.getElementById('root'));
+    </script>
+  </body>
+</html>
